@@ -32,25 +32,27 @@ KICKOFF → Leader
 ```
 You are the colony leader running Benchmark B1: Colony Census.
 
-Your colony must discover and document everything about itself. Create these 12 tasks using `mi task create` with assignedAgent and dependsOn where shown:
+FIRST: Run `mi agent list` to discover your available workers. Assign tasks to REAL agents that are currently online — do NOT use hardcoded names.
 
-WAVE 1 (parallel, no dependencies):
-- T1 (w1): "Agent Inventory" — run `mi agent list`, document each agent's name, provider, model, status, skills. Write JSON to /shared/files/census/agents.json
-- T2 (w2): "Integration Inventory" — run `mi integrations list` AND `mi integrations my`, document all integrations with status. Write JSON to /shared/files/census/integrations.json
-- T3 (w3): "Task Queue Analysis" — query tq_tasks table: count by status, avg completion time, failure rate, most active agents. Write JSON to /shared/files/census/tasks.json
-- T4 (w4): "Shared Drive Audit" — list all files in /shared/files/ recursively with sizes, identify stale files (>7 days), categorize by type. Write JSON to /shared/files/census/files.json
-- T5 (w5): "Credit & Usage Report" — run `mi credits`, check resource usage, estimate burn rate. Write JSON to /shared/files/census/credits.json
+Your colony must discover and document everything about itself. Create 12 tasks using `mi task create` with assignedAgent (use real agent names from mi agent list) and dependsOn where shown. Distribute Wave 1 tasks evenly across available workers.
 
-WAVE 2 (depends on all of Wave 1 completing):
-- T6 (w1, depends on T1+T2+T3+T4+T5): "Cross-Reference Report" — read ALL 5 JSON files from Wave 1. Find: agents without integrations, integrations nobody uses, tasks with no agent, orphaned files. Write /shared/files/census/cross-reference.md
-- T7 (w2, depends on T6): "Capability Gaps" — from cross-reference, list what the colony CAN'T do yet and which integrations would fix it. Write /shared/files/census/capability-gaps.md
-- T8 (w3, depends on T6): "Security Audit" — check for exposed secrets, overly permissive access, agents with unnecessary integrations. Write /shared/files/census/security-audit.md
-- T9 (w4, depends on T6): "Communication Map" — document how agents communicate (XMTP, tq send, shared files). Draw the message flow. Write /shared/files/census/communication-map.md
-- T10 (w5, depends on T6): "Efficiency Score" — calculate colony efficiency: task completion rate, avg time per task, credit cost per task, idle time. Write /shared/files/census/efficiency.md
+WAVE 1 (parallel, no dependencies — assign each to a different worker):
+- "Agent Inventory" — run `mi agent list`, document each agent. Write JSON to /shared/files/census/agents.json
+- "Integration Inventory" — run `mi integrations list` AND `mi integrations my`, document all. Write JSON to /shared/files/census/integrations.json
+- "Task Queue Analysis" — query task stats: count by status, avg completion time, failure rate. Write JSON to /shared/files/census/tasks.json
+- "Shared Drive Audit" — list all files in /shared/files/ with sizes, identify stale files. Write JSON to /shared/files/census/files.json
+- "Credit & Usage Report" — run `mi credits`, estimate burn rate. Write JSON to /shared/files/census/credits.json
+
+WAVE 2 (each depends on ALL Wave 1 tasks — use dependsOn with comma-separated task IDs):
+- "Cross-Reference Report" — read ALL 5 JSON files from Wave 1. Find gaps. Write /shared/files/census/cross-reference.md
+- "Capability Gaps" — what the colony CAN'T do yet. Write /shared/files/census/capability-gaps.md
+- "Security Audit" — check for exposed secrets, overly permissive access. Write /shared/files/census/security-audit.md
+- "Communication Map" — how agents communicate (XMTP, tq send, shared files). Write /shared/files/census/communication-map.md
+- "Efficiency Score" — task completion rate, avg time, credit cost per task. Write /shared/files/census/efficiency.md
 
 WAVE 3 (synthesis):
-- T11 (w4, depends on T7+T8+T9+T10): "Colony Health Card" — read all Wave 2 outputs. Produce a single health score (0-100) with breakdown. Write /shared/files/census/health-card.md
-- T12 (leader, depends on T11): "CENSUS-REPORT.md" — read health card + all outputs. Write executive summary with top 3 strengths, top 3 weaknesses, and recommended actions. Write /shared/files/census/CENSUS-REPORT.md
+- "Colony Health Card" (depends on all Wave 2) — single health score (0-100). Write /shared/files/census/health-card.md
+- "CENSUS-REPORT.md" (depends on Health Card) — executive summary. Write /shared/files/census/CENSUS-REPORT.md. Assign to yourself.
 
 Create /shared/files/census/ directory first. All outputs MUST be in /shared/files/census/. Start now.
 ```
