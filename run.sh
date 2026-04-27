@@ -5,7 +5,7 @@
 # Example: ./run.sh office-cloud-ridge-8de4eec7 os1-sora b1 15
 set -euo pipefail
 
-CLUSTER="${CLUSTER:-arn:aws:eks:us-east-2:856898221895:cluster/os1-production}"
+CLUSTER="${CLUSTER:?Set CLUSTER to your EKS cluster ARN}"
 NS="${1:?Usage: ./run.sh <namespace> <leader> [benchmark] [timeout_minutes]}"
 LEADER="${2:?Usage: ./run.sh <namespace> <leader> [benchmark] [timeout_minutes]}"
 BENCHMARK="${3:-b1}"

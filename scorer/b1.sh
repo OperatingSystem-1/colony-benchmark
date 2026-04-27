@@ -2,7 +2,7 @@
 # B1: Colony Census — Scorer
 set -euo pipefail
 
-CLUSTER="${CLUSTER:-arn:aws:eks:us-east-2:856898221895:cluster/os1-production}"
+CLUSTER="${CLUSTER:?Set CLUSTER to your EKS cluster ARN}"
 NS="${1:?namespace required}"
 LEADER="${2:?leader required}"
 KC="kubectl --context $CLUSTER -n $NS"
