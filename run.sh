@@ -25,8 +25,8 @@ if [ -z "$BENCH_FILE" ]; then
     exit 1
 fi
 
-# Extract kickoff prompt from the markdown (between ```\n and \n```)
-KICKOFF=$(awk '/^```$/{if(inside){inside=0;next}else{inside=1;next}} inside{print}' "$BENCH_FILE" | head -1000)
+# Extract kickoff prompt — content between "## Kickoff Prompt" and "## Scoring"
+KICKOFF=$(awk '/^## Kickoff Prompt/{found=1;next} /^## Scoring/{found=0} found' "$BENCH_FILE" | grep -v '^```')
 if [ -z "$KICKOFF" ]; then
     echo "ERROR: Could not extract kickoff prompt from $BENCH_FILE"
     exit 1
@@ -87,7 +87,7 @@ while [ "$(date +%s)" -lt "$END_TIME" ]; do
          GROUP BY status ORDER BY status;" 2>/dev/null || true
 
     # File count in benchmark dir
-    BENCH_DIR=$(echo "$KICKOFF" | grep -oP '/shared/files/\w+/' | head -1)
+    BENCH_DIR=$(echo "$KICKOFF" | grep -o '/shared/files/[a-z_-]*/' | head -1)
     if [ -n "$BENCH_DIR" ]; then
         FILE_COUNT=$($KC exec ${LEADER}-0 -c openclaw -- sh -c \
             "find ${BENCH_DIR} -type f 2>/dev/null | wc -l" 2>/dev/null || echo "0")
